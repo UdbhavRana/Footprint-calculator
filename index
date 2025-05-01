@@ -1,0 +1,91 @@
+import React, { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+
+export default function AgritechDashboard() {
+  const [formData, setFormData] = useState({
+    cropType: "Cotton",
+    quantity: "1000",
+    origin: "India",
+    destination: "Europe",
+    transport: "Ship",
+  });
+
+  const [impact, setImpact] = useState({
+    carbon: 0,
+    water: 0,
+    air: 0,
+  });
+
+  const handleInputChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const calculateImpact = () => {
+    const factor = formData.transport === "Air" ? 10 : 3;
+    setImpact({
+      carbon: formData.quantity * factor,
+      water: formData.quantity * 500,
+      air: formData.quantity * 0.1,
+    });
+  };
+
+  return (
+    <div className="grid grid-cols-3 gap-4 p-4">
+      <Card className="col-span-1">
+        <CardContent>
+          <h2 className="text-xl font-bold mb-2">Input Data</h2>
+          <input
+            name="cropType"
+            value={formData.cropType}
+            onChange={handleInputChange}
+            placeholder="Crop Type"
+            className="p-2 border w-full mb-2"
+          />
+          <input
+            name="quantity"
+            value={formData.quantity}
+            onChange={handleInputChange}
+            placeholder="Quantity (tons)"
+            className="p-2 border w-full mb-2"
+          />
+          <input
+            name="origin"
+            value={formData.origin}
+            onChange={handleInputChange}
+            placeholder="Origin"
+            className="p-2 border w-full mb-2"
+          />
+          <input
+            name="destination"
+            value={formData.destination}
+            onChange={handleInputChange}
+            placeholder="Destination"
+            className="p-2 border w-full mb-2"
+          />
+          <select
+            name="transport"
+            value={formData.transport}
+            onChange={handleInputChange}
+            className="p-2 border w-full mb-4"
+          >
+            <option value="Ship">Ship</option>
+            <option value="Air">Air</option>
+            <option value="Rail">Rail</option>
+            <option value="Road">Road</option>
+          </select>
+          <Button onClick={calculateImpact}>Calculate Impact</Button>
+        </CardContent>
+      </Card>
+
+      <Card className="col-span-2">
+        <CardContent>
+          <h2 className="text-xl font-bold mb-4">Environmental Impact Summary</h2>
+          <p><strong>Carbon Footprint:</strong> {impact.carbon} kg CO₂e</p>
+          <p><strong>Water Usage:</strong> {impact.water} L</p>
+          <p><strong>Air Pollution Index:</strong> {impact.air}</p>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
